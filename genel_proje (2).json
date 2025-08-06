@@ -1,0 +1,403 @@
+{
+  "name": "genel_proje",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "authentication": "n8nUserAuth",
+        "initialMessages": "Merhaba ben Uni. Bot.Cerrahpaşa ve YTÜ için özel olarak eğitilen bir asistanım.",
+        "options": {
+          "allowFileUploads": true,
+          "inputPlaceholder": "Herhangi bir şey sor.",
+          "showWelcomeScreen": true,
+          "subtitle": "Senin asistanın.",
+          "title": "Uni. Bot.",
+          "responseMode": "lastNode"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -304,
+        -128
+      ],
+      "id": "cd6690cc-0259-40b0-ae5d-8cb29fa781c4",
+      "name": "When chat message received",
+      "webhookId": "cae69a20-a2be-470d-9592-5be8b7b45da6"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.chatInput }}.",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "# Rol  \nSen, İstanbul Üniversitesi - Cerrahpaşa ve Yıldız Teknik Üniversitesi öğrencilerine yardımcı olmak için tasarlanmış bir **akademik sohbet asistanısın**. Görevin, öğrencilerin akademik ve idari konularla ilgili merak ettikleri sorulara doğru, açıklayıcı ve yardımsever cevaplar vermektir.\n\n---\n\n# Kullanıcı Profili  \nKullanıcıların çoğu İstanbul Üniversitesi - Cerrahpaşa öğrencileridir.  \nSana genellikle şu konularda sorular soracaklardır:\n- Ders içerikleri  \n- Sınav tarihleri  \n- Fakülte kuralları  \n- Kampüs yaşamı  \n- İdari işlemler  \nYanıtlarında daima açık, güvenilir ve yol gösterici olmalısın.\n\n---\n\n# Dil  \nTüm konuşmalar ve yanıtlar **Türkçe** olmalıdır.  \nGerektiğinde teknik terimleri basit bir dille açıklamalısın.\n\n---\n\n# Konuşma Tarzı  \n- Yardımsever, sabırlı ve öğretici bir üslup kullan  \n- Asla resmi ya da mesafeli bir ton kullanma  \n- Gerekirse örneklerle anlatım yap  \n\n---\n\n# Araçlar  \nAşağıdaki araçlara erişimin var. Her birini yalnızca ilgili durumlarda kullanmalısın:\n\n---\n\n### ✅ `fine_tuned`  \nBu aracı, üniversite hayatı ile ilgili *esprili, deneyimli ve öğrenci yorumlarına dayalı* bilgi çekmek için kullan.  \n- Özellikle sık sorulan sorular bu veri kümesinde yer alabilir.  \n- Bu araçtan gelen yanıtları *biraz düzenleyerek*, açıklama ekleyip kullanıcıya aktarabilirsin.\n\n---\n\n### ✅ `rag`  \nBu aracı, dış dokümantasyonlardan (ders notları, fakülte yönetmelikleri, resmi web siteleri vb.) bilgi almak için kullan.  \n- **Nesnel**, **belgelere dayalı** bilgi gerektiren durumlarda tercih edilmelidir.\n\n---\n\n### ✅ `calculator`  \nBu aracı, not hesaplama, yüzdelik işlemler ya da diğer matematiksel analizler için kullan.  \n- Örneğin: \"Vizeden 70 aldım, finalden kaç almalıyım?\"\n\n---\n\n### ✅ `sent_mail`  \nBu aracı, kullanıcı bir e-posta göndermek istediğinde kullan.  \n- Kullanıcıdan şu bilgileri al:  \n  - `to`  \n  - `subject`  \n  - `message`  \n\n- Bu verileri şu JSON formatında **hiçbir kontrol veya açıklama eklemeden** doğrudan `sent_mail` aracına gönder:\n\n```json\n{\n  \"to\": \"hedef@domain.com\",\n  \"subject\": \"Konu başlığı\",\n  \"message\": \"Mesaj içeriği buraya yazılır.\"\n}\n---\n\n###  `video_analyzer`  \nBu aracı, sunum, eğitim veya bilgilendirici videoların özetini çıkarmak için kullan.  \n- **Amaç:** Kullanıcının video içeriğini hızlıca anlamasını sağlamak  \n- **Dikkat:** Özetler *tarafsız* ve *bilgilendirici* olmalıdır.  \n- **Spekülatif veya yorum içeren açıklamalardan kaçınılmalıdır.**\n\n---\n##insert_member\nBu aracı, kullanıcı bir öğrenci kulübüne katılmak istediğinde veya kulüpler hakkında soru sorduğunda kullan.\n\nKullanıcıdan şu bilgileri al:\n\nname\n\nemail\n\nclub\n\nBu bilgileri aşağıdaki JSON formatında doğrudan insert_member aracına gönder:\n\n{\n  \"name\": \"Ad Soyad\",\n  \"email\": \"kullanici@ogrenci.edu.tr\",\n  \"club\": \"Kulüp Adı\",\n  \"timestamp\": \"2025-08-05T14:45:00Z\"\n}\n\n# Tarih ve Saat: {{ $now }}\n",
+          "maxIterations": 10,
+          "returnIntermediateSteps": true,
+          "passthroughBinaryImages": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        272,
+        -128
+      ],
+      "id": "da75260d-531a-4e6b-8a1d-32bb379d8f2e",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "session",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -16,
+        176
+      ],
+      "id": "ed33106e-c597-424c-949e-4ec7e29a2be4",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "options": {
+          "safetySettings": {
+            "values": [
+              {
+                "category": "HARM_CATEGORY_HARASSMENT"
+              },
+              {
+                "category": "HARM_CATEGORY_HATE_SPEECH",
+                "threshold": "BLOCK_ONLY_HIGH"
+              }
+            ]
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -96,
+        80
+      ],
+      "id": "fbc361ec-fa47-42fb-9527-f94296c2b2d8",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "35c3e9bZE8n3ZyCl",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "Bu araç, yalnızca aşağıdaki konularla ilgili sorular geldiğinde kullanılmalıdır:\n\nEğitim geçmişi\n\nKariyer planlaması\n\nAkademik geçmiş\n\nDiploma ve sertifikalar\n\nMesleki deneyim\n\nİş arama süreçleri\n\nAkademik Hayat\n\nKullanıcının {{ $json.chatInput }} içinde yukarıdaki alanlarla ilgili bir sorgusu varsa bu araç aktif hale gelmelidir. Diğer tüm konularda bu araç devre dışı bırakılmalıdır.\n\nBu araçla verilen yanıtlar, model tarafından yalnızca çok küçük düzeltmelerle, orijinal cevaba sadık kalınarak kullanıcıya sunulmalıdır. Gereksiz değişikliklerden kaçınılmalıdır.",
+        "method": "POST",
+        "url": "https://us-central1-aiplatform.googleapis.com/v1/projects/246624734452/locations/us-central1/endpoints/2397466412667895808:generateContent",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleOAuth2Api",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"contents\": [\n    {\n      \"role\": \"user\",\n      \"parts\": [\n        {\n          \"text\": \"Bana üniversite öğrencisi için akademik tavsiyeler verir misin?\"\n        }\n      ]\n    }\n  ],\n  \"generationConfig\": {\n    \"temperature\": 0.7,  \n    \"topP\": 0.95,\n    \"maxOutputTokens\": 8192\n  },\n  \"safetySettings\": [\n    {\n      \"category\": \"HARM_CATEGORY_HATE_SPEECH\",\n      \"threshold\": \"BLOCK_NONE\"\n    },\n    {\n      \"category\": \"HARM_CATEGORY_DANGEROUS_CONTENT\",\n      \"threshold\": \"BLOCK_NONE\"\n    },\n    {\n      \"category\": \"HARM_CATEGORY_SEXUALLY_EXPLICIT\",\n      \"threshold\": \"BLOCK_NONE\"\n    },\n    {\n      \"category\": \"HARM_CATEGORY_HARASSMENT\",\n      \"threshold\": \"BLOCK_NONE\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        96,
+        256
+      ],
+      "id": "1b182d86-7659-4f1c-8b15-eef92f6272f4",
+      "name": "fined_tuned",
+      "executeOnce": false,
+      "credentials": {
+        "googleOAuth2Api": {
+          "id": "kBUHo4Sg5c1T5Qy0",
+          "name": "Google account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolCalculator",
+      "typeVersion": 1,
+      "position": [
+        208,
+        368
+      ],
+      "id": "29db1449-8236-47b7-8e55-053fb5e3b5e5",
+      "name": "Calculator"
+    },
+    {
+      "parameters": {
+        "description": "call this tool to send email someone.",
+        "workflowId": {
+          "__rl": true,
+          "value": "ldSJsYAZj1QawzIV",
+          "mode": "list",
+          "cachedResultName": "gmail agent"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        288,
+        464
+      ],
+      "id": "84ce3582-813e-420e-a7ae-c6284cfff653",
+      "name": "sent mail"
+    },
+    {
+      "parameters": {
+        "description": "\nBu aracı, üniversiteye ait dökümanlar, ders notları, yönetmelikler, akademik takvimler veya diğer dış kaynaklardan bilgi almak için kullanılır..  \nKullanıcının sorduğu konu hakkında mevcut bilgin yetersizse veya güncel/veriye dayalı bir açıklama gerekiyorsa bu aracı devreye al.  \nYanıt üretmeden önce ilgili metni geri getirir ve ardından kullanıcıya açıklayıcı bir cevap oluşturursun.\n\n🧠 Kullanım Senaryoları:  \n- Ders içeriği veya kaynak not sorgulama  \n- Fakülte yönetmeliği maddesi öğrenme  \n- Akademik takvimde tarih bulma  \n- Dış kaynaklı açıklamalı bilgi gerektiren konular\n\n❗ Dikkat:  \nGeri getirilen bilginin doğruluğunu kontrol et ve sadece bağlama uygun kısmını kullanarak cevap üret."
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1.1,
+      "position": [
+        496,
+        144
+      ],
+      "id": "c3f8c2b9-612d-4782-96be-1013b787f27b",
+      "name": "rag"
+    },
+    {
+      "parameters": {
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "ragbot3",
+          "mode": "list",
+          "cachedResultName": "ragbot3"
+        },
+        "options": {
+          "pineconeNamespace": "ragbot"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        416,
+        384
+      ],
+      "id": "68b6ca84-ab00-41a8-934c-9cbb2381720b",
+      "name": "Pinecone Vector Store",
+      "credentials": {
+        "pineconeApi": {
+          "id": "nYmOykDiXDuVyhTH",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        512,
+        512
+      ],
+      "id": "d7e888a7-a3fb-42d4-a4e3-cd6f0c0c8318",
+      "name": "Embeddings Google Gemini",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "35c3e9bZE8n3ZyCl",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "This tool analyze and transcribe video",
+        "resource": "video",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-1.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-1.5-flash"
+        },
+        "videoUrls": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('URL_s_', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGeminiTool",
+      "typeVersion": 1,
+      "position": [
+        912,
+        304
+      ],
+      "id": "549a9111-3ae1-488f-913d-666d9e30f75e",
+      "name": "video_analyze",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "35c3e9bZE8n3ZyCl",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        736,
+        432
+      ],
+      "id": "ac586c71-f6d9-48d5-8859-4735908df17e",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "35c3e9bZE8n3ZyCl",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "fined_tuned": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculator": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "sent mail": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "rag": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "rag",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "video_analyze": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "rag",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "03c93e58-e2a3-434c-a22a-2843234f805a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "00a79498d5c3b6198959ad17059856730a8757021dcc9d1d8d2b7724f00d4bf4"
+  },
+  "id": "ipwh6vZ0pDptaTjm",
+  "tags": []
+}

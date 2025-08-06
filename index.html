@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Üni Bot Üniversite Kariyer Danışmanı</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Reset & Box Sizing */
+    *, *::before, *::after { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+    }
+
+    :root {
+      --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --primary-blue: #4e8cff;
+      --primary-purple: #667eea;
+      --dark-purple: #5a67d8;
+      --light-gray: #f8fafc;
+      --medium-gray: #e2e8f0;
+      --dark-gray: #64748b;
+      --text-primary: #1e293b;
+      --text-secondary: #64748b;
+      --white: #ffffff;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      --border-radius-sm: 8px;
+      --border-radius-md: 12px;
+      --border-radius-lg: 16px;
+      --border-radius-xl: 20px;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--primary-gradient);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--light-gray);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--medium-gray);
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--dark-gray);
+    }
+
+    /* Login Screen Styles */
+    .login-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+
+    .login-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: var(--border-radius-xl);
+      padding: 3rem;
+      box-shadow: var(--shadow-xl);
+      width: 100%;
+      max-width: 480px;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      transform: translateY(0);
+      transition: all 0.3s ease;
+    }
+
+    .login-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+
+    .login-logo {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .login-logo svg { 
+      width: 100%; 
+      height: auto; 
+      filter: drop-shadow(0 4px 8px rgba(78, 140, 255, 0.3));
+    }
+
+    .login-title {
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .login-subtitle {
+      color: var(--text-secondary);
+      margin-bottom: 2.5rem;
+      font-size: 1.1rem;
+      font-weight: 400;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+      text-align: left;
+      position: relative;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 0.75rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      transition: color 0.2s ease;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 1.25rem 1.5rem;
+      border: 2px solid var(--medium-gray);
+      border-radius: var(--border-radius-md);
+      font-size: 1rem;
+      font-weight: 400;
+      transition: all 0.3s ease;
+      background: rgba(255, 255, 255, 0.8);
+      position: relative;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary-blue);
+      background: var(--white);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(78, 140, 255, 0.15);
+    }
+
+    .form-input:focus + .form-label {
+      color: var(--primary-blue);
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 1.25rem 2rem;
+      background: var(--primary-gradient);
+      color: var(--white);
+      border: none;
+      border-radius: var(--border-radius-md);
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .login-btn:hover::before {
+      left: 100%;
+    }
+
+    .login-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 35px rgba(78, 140, 255, 0.4);
+    }
+
+    .login-btn:active {
+      transform: translateY(-1px);
+    }
+
+    /* Main App Styles */
+    .app-container {
+      display: none;
+      min-height: 100vh;
+      background: var(--light-gray);
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem 2rem;
+      background: var(--white);
+      box-shadow: var(--shadow-sm);
+      border-bottom: 1px solid var(--medium-gray);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .logo {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--primary-gradient);
+      border-radius: var(--border-radius-md);
+      box-shadow: var(--shadow-md);
+    }
+
+    .logo svg { 
+      width: 28px; 
+      height: 28px; 
+    }
+
+    .header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    .logout-btn {
+      background: var(--light-gray);
+      border: 1px solid var(--medium-gray);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--border-radius-sm);
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      color: var(--text-secondary);
+    }
+
+    .logout-btn:hover {
+      background: var(--medium-gray);
+      color: var(--text-primary);
+      transform: translateY(-1px);
+    }
+
+    .main-container {
+      flex: 1;
+      display: flex;
+      max-width: 1400px;
+      margin: 2rem auto;
+      gap: 2rem;
+      width: 100%;
+      padding: 0 2rem;
+    }
+
+    .sidebar {
+      width: 300px;
+      background: var(--white);
+      border-radius: var(--border-radius-lg);
+      padding: 2rem;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--medium-gray);
+      height: fit-content;
+      position: sticky;
+      top: 120px;
+    }
+
+    .sidebar h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .sidebar h3::before {
+      content: '⚡';
+      font-size: 1.1rem;
+    }
+
+    .quick-topics {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .topic-btn {
+      background: var(--light-gray);
+      border: 1px solid var(--medium-gray);
+      padding: 1rem 1.25rem;
+      border-radius: var(--border-radius-md);
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: left;
+      font-weight: 500;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .topic-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 100%;
+      background: var(--primary-gradient);
+      transform: scaleY(0);
+      transition: transform 0.3s ease;
+    }
+
+    .topic-btn:hover {
+      background: var(--white);
+      border-color: var(--primary-blue);
+      transform: translateX(5px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .topic-btn:hover::before {
+      transform: scaleY(1);
+    }
+
+    .chat-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: var(--white);
+      border-radius: var(--border-radius-lg);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--medium-gray);
+      overflow: hidden;
+    }
+
+    .chat-header {
+      padding: 2rem 2rem 1rem;
+      border-bottom: 1px solid var(--medium-gray);
+      background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+    }
+
+    .chat-header h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .chat-header h2::before {
+      content: '🤖';
+      font-size: 1.25rem;
+    }
+
+    .chat-header p {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      font-weight: 400;
+    }
+
+    .chat-messages {
+      flex: 1;
+      padding: 2rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      min-height: 500px;
+      background: linear-gradient(135deg, #fafafa 0%, #ffffff 100%);
+    }
+
+    .message {
+      max-width: 80%;
+      padding: 1rem 1.5rem;
+      border-radius: var(--border-radius-lg);
+      position: relative;
+      line-height: 1.6;
+      font-weight: 400;
+      box-shadow: var(--shadow-sm);
+      animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .message.user {
+      align-self: flex-end;
+      background: var(--primary-gradient);
+      color: var(--white);
+      border-bottom-right-radius: 4px;
+    }
+
+    .message.assistant {
+      align-self: flex-start;
+      background: var(--white);
+      color: var(--text-primary);
+      border: 1px solid var(--medium-gray);
+      border-bottom-left-radius: 4px;
+    }
+
+    .welcome-message {
+      text-align: center;
+      width: 100%;
+      color: var(--text-secondary);
+      background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+      padding: 3rem 2rem;
+      border-radius: var(--border-radius-lg);
+      border: 2px dashed var(--medium-gray);
+    }
+
+    .welcome-message h3 { 
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+      color: var(--text-primary);
+    }
+
+    .welcome-message p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+
+    .chat-input-container {
+      padding: 1.5rem 2rem;
+      border-top: 1px solid var(--medium-gray);
+      display: flex;
+      align-items: flex-end;
+      gap: 1rem;
+      background: var(--white);
+    }
+
+    .chat-input {
+      flex: 1;
+      border: 2px solid var(--medium-gray);
+      border-radius: var(--border-radius-md);
+      padding: 1rem 1.25rem;
+      font-size: 1rem;
+      font-family: inherit;
+      resize: none;
+      min-height: 56px;
+      max-height: 120px;
+      outline: none;
+      transition: all 0.3s ease;
+      background: var(--light-gray);
+    }
+
+    .chat-input:focus { 
+      border-color: var(--primary-blue);
+      background: var(--white);
+      box-shadow: 0 0 0 3px rgba(78, 140, 255, 0.1);
+    }
+
+    .send-btn {
+      background: var(--primary-gradient);
+      border: none;
+      border-radius: 50%;
+      width: 56px;
+      height: 56px;
+      color: var(--white);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow-md);
+      flex-shrink: 0;
+    }
+
+    .send-btn:hover { 
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .send-btn:active {
+      transform: translateY(0) scale(1);
+    }
+
+    /* Loading animation */
+    .typing-indicator {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+
+    .typing-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--text-secondary);
+      animation: typing 1.4s infinite ease-in-out;
+    }
+
+    .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+    .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+    .typing-dot:nth-child(3) { animation-delay: 0s; }
+
+    @keyframes typing {
+      0%, 80%, 100% { 
+        transform: scale(0.8);
+        opacity: 0.5;
+      }
+      40% { 
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .login-card {
+        padding: 2rem;
+        margin: 1rem;
+        max-width: 100%;
+      }
+
+      .login-title {
+        font-size: 1.875rem;
+      }
+
+      .main-container { 
+        flex-direction: column; 
+        padding: 0 1rem;
+        gap: 1rem;
+      }
+
+      .sidebar { 
+        width: 100%; 
+        order: 2;
+        position: static;
+        padding: 1.5rem;
+      }
+
+      .chat-container { 
+        order: 1; 
+      }
+
+      .header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+        padding: 1rem;
+      }
+
+      .user-info {
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .chat-messages {
+        padding: 1rem;
+        min-height: 400px;
+      }
+
+      .chat-input-container {
+        padding: 1rem;
+      }
+
+      .message {
+        max-width: 90%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .login-card {
+        padding: 1.5rem;
+      }
+
+      .form-input {
+        padding: 1rem;
+      }
+
+      .chat-header {
+        padding: 1.5rem 1rem 1rem;
+      }
+
+      .chat-header h2 {
+        font-size: 1.25rem;
+      }
+    }
+
+    /* Focus visible for accessibility */
+    .login-btn:focus-visible,
+    .logout-btn:focus-visible,
+    .topic-btn:focus-visible,
+    .send-btn:focus-visible {
+      outline: 2px solid var(--primary-blue);
+      outline-offset: 2px;
+    }
+
+    /* High contrast mode support */
+    @media (prefers-contrast: high) {
+      :root {
+        --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+        --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+      }
+    }
+
+    /* Reduced motion for accessibility */
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <script src="script.js"></script>
+  <!-- Login Screen -->
+  <div id="loginScreen" class="login-container">
+    <div class="login-card">
+      <div class="login-logo">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="64" height="64" rx="12" fill="url(#grad1)"/>
+          <defs>
+            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#4e8cff;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#667eea;stop-opacity:1" />
+            </linearGradient>
+          </defs>
+          <path d="M32 16L42 32H22L32 16Z" fill="white"/>
+          <rect x="28" y="32" width="8" height="16" fill="white"/>
+        </svg>
+      </div>
+
+      <h1 class="login-title">Üni Bot</h1>
+      <p class="login-subtitle">Kariyer danışmanlığı için giriş yapın</p>
+
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label class="form-label" for="schoolName">Okul Adı</label>
+          <input type="text" id="schoolName" class="form-input" placeholder="Üniversitenizin adını giriniz" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="firstName">Adınız</label>
+          <input type="text" id="firstName" class="form-input" placeholder="Adınızı giriniz" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="lastName">Soyadınız</label>
+          <input type="text" id="lastName" class="form-input" placeholder="Soyadınızı giriniz" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="email">E-posta</label>
+          <input type="email" id="email" class="form-input" placeholder="E-posta adresinizi giriniz" required>
+        </div>
+
+        <button type="submit" class="login-btn">Giriş Yap</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Main App (Hidden initially) -->
+  <div id="appScreen" class="app-container">
+    <header class="header">
+      <div class="header-left">
+        <div class="logo">
+          <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M32 16L42 32H22L32 16Z" fill="white"/>
+            <rect x="28" y="32" width="8" height="16" fill="white"/>
+          </svg>
+        </div>
+        <h1>Üni Bot</h1>
+      </div>
+
+      <div class="user-info">
+        <span id="welcomeText">Hoşgeldiniz!</span>
+        <button class="logout-btn" onclick="handleLogout()">Çıkış Yap</button>
+      </div>
+    </header>
+
+    <div class="main-container">
+      <aside class="sidebar">
+        <h3>Hızlı Konular</h3>
+        <div class="quick-topics">
+          <button class="topic-btn" onclick="sendQuickMessage('İlgi alanlarıma uygun kariyer yolları nelerdir?')">🎯 Kariyer Yolları</button>
+          <button class="topic-btn" onclick="sendQuickMessage('Doğru bölümü nasıl seçerim?')">📚 Bölüm Seçimi</button>
+          <button class="topic-btn" onclick="sendQuickMessage('Hangi becerileri geliştirmeliyim?')">💪 Beceri Geliştirme</button>
+          <button class="topic-btn" onclick="sendQuickMessage('İş piyasası trendleri hakkında bilgi verir misin?')">📈 İş Piyasası Trendleri</button>
+          <button class="topic-btn" onclick="sendQuickMessage('CV ve cover letter nasıl hazırlarım?')">📄 CV Hazırlama</button>
+          <button class="topic-btn" onclick="sendQuickMessage('Mülakat sürecinde hangi ipuçları önemli?')">💼 Mülakat İpuçları</button>
+        </div>
+      </aside>
+
+      <main class="chat-container">
+        <div class="chat-header">
+          <h2>Kariyer Danışmanı</h2>
+          <p>Kariyerin hakkında bana danışabilirsin. Her türlü sorunun yanıtını bulmaya hazırım!</p>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+          <div class="welcome-message">
+            <h3>👋 Hoş geldiniz!</h3>
+            <p>Kariyer yolculuğunuzda size rehberlik etmek için buradayım. Sorularınızı yazın veya hızlı konulardan birini seçin.</p>
+          </div>
+        </div>
+
+        <div class="chat-input-container">
+          <textarea id="chatInput" class="chat-input" placeholder="Sorunuzu buraya yazın..." rows="1"></textarea>
+          <button id="sendBtn" class="send-btn" onclick="sendMessage()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2 21L23 12L2 3V10L17 12L2 14V21Z" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+      </main>
+    </div>
+  </div>
+
+
+</body>
+</html>
+// User data storage
+let userData = {
+  schoolName: '',
+  firstName: '',
+  lastName: '',
+  email: ''
+};
+
+// Login functionality
+function handleLogin(event) {
+  event.preventDefault();
+
+  // Get form data
+  userData.schoolName = document.getElementById('schoolName').value.trim();
+  userData.firstName = document.getElementById('firstName').value.trim();
+  userData.lastName = document.getElementById('lastName').value.trim();
+  userData.email = document.getElementById('email').value.trim();
+
+  // Validate form
+  if (!userData.schoolName || !userData.firstName || !userData.lastName || !userData.email) {
+    alert('Lütfen tüm alanları doldurun.');
+    return;
+  }
+
+  // Email validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(userData.email)) {
+    alert('Lütfen geçerli bir e-posta adresi giriniz.');
+    return;
+  }
+
+  // Show main app with fade transition
+  const loginScreen = document.getElementById('loginScreen');
+  const appScreen = document.getElementById('appScreen');
+
+  loginScreen.style.transition = 'opacity 0.3s ease';
+  loginScreen.style.opacity = '0';
+
+  setTimeout(() => {
+    loginScreen.style.display = 'none';
+    appScreen.style.display = 'block';
+    appScreen.style.opacity = '0';
+    appScreen.style.transition = 'opacity 0.3s ease';
+
+    setTimeout(() => {
+      appScreen.style.opacity = '1';
+    }, 50);
+  }, 300);
+
+  // Update welcome message
+  const welcomeText = document.getElementById('welcomeText');
+  welcomeText.textContent = `Hoşgeldin ${userData.firstName}! • ${userData.schoolName}`;
+
+  // Update chat welcome message
+  const chatWelcome = document.querySelector('.welcome-message');
+  if (chatWelcome) {
+    chatWelcome.innerHTML = `
+      <h3>👋 Hoş geldin ${userData.firstName}!</h3>
+      <p>Kariyer danışmanlığı için sorularınızı yazın veya hızlı konulardan birini seçin. Size en iyi şekilde yardımcı olmaya hazırım!</p>
+    `;
+  }
+}
+
+function handleLogout() {

@@ -1,0 +1,197 @@
+{
+  "name": "insert club",
+  "nodes": [
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "https://docs.google.com/document/d/1CprjkKRb0xXnzg0ZSpNRHZt7Ufs3q20IJYUSIC6lAnA/edit?usp=sharing",
+          "mode": "url"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        256,
+        0
+      ],
+      "id": "9f54c7b0-5f9e-44a6-a189-6d4db7080a18",
+      "name": "Download file",
+      "credentials": {
+        "googleApi": {
+          "id": "PGO5Qdwe4X17D02o",
+          "name": "Google Service Account account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "clubs",
+          "mode": "list",
+          "cachedResultName": "clubs"
+        },
+        "options": {
+          "pineconeNamespace": "clubs"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        464,
+        0
+      ],
+      "id": "00f43944-3a57-4de6-8013-55a76586c37b",
+      "name": "Pinecone Vector Store",
+      "credentials": {
+        "pineconeApi": {
+          "id": "nYmOykDiXDuVyhTH",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataType": "binary",
+        "textSplittingMode": "custom",
+        "options": {
+          "splitPages": true,
+          "metadata": {
+            "metadataValues": [
+              {
+                "name": "file_name",
+                "value": "={{ $json.name }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        624,
+        256
+      ],
+      "id": "970e7e59-1ca4-4040-9f12-80900252a5d7",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        384,
+        240
+      ],
+      "id": "6430496c-110a-4ea3-83db-1e3e420033cc",
+      "name": "Embeddings Google Gemini",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "35c3e9bZE8n3ZyCl",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chunkSize": 500,
+        "chunkOverlap": 30,
+        "options": {
+          "splitCode": "markdown"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        672,
+        480
+      ],
+      "id": "dfe1f16d-5f23-43c3-8257-318377113ef3",
+      "name": "Recursive Character Text Splitter"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "69c047ff-b38e-47c7-afaa-d05182bbecda",
+      "name": "When clicking ‘Execute workflow’"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "14b58d6a-7212-4e79-a05b-0d6135c46b3a",
+  "meta": {
+    "instanceId": "00a79498d5c3b6198959ad17059856730a8757021dcc9d1d8d2b7724f00d4bf4"
+  },
+  "id": "gsBvdaoBDXJhinxl",
+  "tags": []
+}

@@ -1,0 +1,420 @@
+{
+  "name": "insert_member",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1mjLAMvClOg2Li9AYVbFEOS714ZrLkr0Yk22umIKktk0",
+          "mode": "list",
+          "cachedResultName": "member table",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1mjLAMvClOg2Li9AYVbFEOS714ZrLkr0Yk22umIKktk0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sayfa1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1mjLAMvClOg2Li9AYVbFEOS714ZrLkr0Yk22umIKktk0/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "c_name": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('c_name', ``, 'string') }}",
+            "ad": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('ad', ``, 'string') }}",
+            "soyad": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('soyad', ``, 'string') }}",
+            "eposta": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('eposta', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "c_name",
+              "displayName": "c_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ad",
+              "displayName": "ad",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "soyad",
+              "displayName": "soyad",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "eposta",
+              "displayName": "eposta",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.5,
+      "position": [
+        624,
+        144
+      ],
+      "id": "b3dcfe39-3533-4b10-b3a7-502c2958eeb8",
+      "name": "Append row in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "z8gcX37iS9efjIQw",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -400,
+        16
+      ],
+      "id": "95ea3be1-4065-46d0-9f07-0ca7f4a7b4c1",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "name": "goldsmith_q",
+        "description": "sana verilen bilgilerin var olup olmadığını söyle.varsa True yoksa False de."
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1,
+      "position": [
+        112,
+        240
+      ],
+      "id": "ab649384-15f1-4611-8441-52d247088e8f",
+      "name": "goldsmith_q"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        496
+      ],
+      "id": "480dfcaf-4334-4d10-96de-1db24745492a",
+      "name": "Embeddings Google Gemini",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "35c3e9bZE8n3ZyCl",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -176,
+        192
+      ],
+      "id": "92b270c9-869a-4839-9e88-4978954131ed",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "35c3e9bZE8n3ZyCl",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "clubs",
+          "mode": "list",
+          "cachedResultName": "clubs"
+        },
+        "options": {
+          "pineconeNamespace": "clubs"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1,
+      "position": [
+        -224,
+        400
+      ],
+      "id": "24cb2930-b41e-4200-99b1-c9243c94c989",
+      "name": "Pinecone Vector Store",
+      "credentials": {
+        "pineconeApi": {
+          "id": "nYmOykDiXDuVyhTH",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        240,
+        544
+      ],
+      "id": "d5c989dc-94d9-4058-b3bc-9e98a32fdaeb",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "35c3e9bZE8n3ZyCl",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "session",
+        "contextWindowLength": 12
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        16,
+        224
+      ],
+      "id": "956a81d5-a4cd-4bd0-b407-b86a99c024f6",
+      "name": "Window Buffer Memory"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.query }} ",
+        "options": {
+          "systemMessage": "## Rol:\nSen, İstanbul Üniversitesi - Cerrahpaşa ve Yıldız Teknik Üniversitesi'ndeki öğrenci kulüplerini yöneten yardımsever bir asistansın.\n\n## Görev:\nKullanıcılara okul kulüpleri hakkında bilgi verirsin ve uygun olanlara başvuru yapmalarını sağlarsın.\n\n## Detaylar:\n- Eğer bir kullanıcı bir kulüp hakkında soru sorarsa (örneğin: “Müzik kulübü var mı?”, “Yapay zeka kulübüne nasıl katılırım?”), önce kulübün gerçekten var olup olmadığını kontrol et.\n- Bunun için ilk olarak **rag** aracını kullan. Eğer kulüp dokümantasyonlarda varsa **True**, yoksa **False** döndür.\n- Kulüp varsa, kullanıcıdan şu bilgileri topla:\n  - Ad Soyad  \n  - Okul e-posta adresi\n\n- Bu bilgileri **insert_member** aracı ile ilgili Google Sheets dosyasına kaydet.\n\n## Araçlar:\n\n- **rag**  \n  Kulübün resmi olarak var olup olmadığını kontrol etmek için bu aracı kullan. Dokümantasyonlar üzerinden arama yapar.\n\n- **insert_member**  \n  Kullanıcının kulübe başvuru bilgilerini (Ad, e-posta) Google Sheets'e kaydetmek için kullanılır.\n\n## Ek Not:\n{\n  \"name\": \"...\",\n  \"email\": \"...\",\n  \"club\": \"...\",\n  \"university\": \"...\",\n  \"timestamp\": \"...\" // ISO 8601 format (örn: 2025-08-05T14:45:00Z) \n}\nçıktılar bu formatta olsun\nKullanıcının doğrudan başvuru yapma isteği olmasa bile, kulüplerle ilgili her konuşma bu ajanı tetikleyebilir. Kulüp mevcut değilse, bunu kullanıcıya nazikçe bildir ve alternatif öneriler sunabilirsin.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        0,
+        0
+      ],
+      "id": "d03e0e55-33e6-4d19-992d-0aa98491cfbf",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1mjLAMvClOg2Li9AYVbFEOS714ZrLkr0Yk22umIKktk0",
+          "mode": "list",
+          "cachedResultName": "member table",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1mjLAMvClOg2Li9AYVbFEOS714ZrLkr0Yk22umIKktk0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sayfa1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1mjLAMvClOg2Li9AYVbFEOS714ZrLkr0Yk22umIKktk0/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "c_name",
+              "displayName": "c_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ad",
+              "displayName": "ad",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "soyad",
+              "displayName": "soyad",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "eposta",
+              "displayName": "eposta",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        480,
+        -16
+      ],
+      "id": "a60ba85f-7315-43b0-aca9-1e3bc2edda31",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "z8gcX37iS9efjIQw",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Append row in sheet in Google Sheets": {
+      "ai_tool": [
+        []
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "goldsmith_q",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "goldsmith_q",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "goldsmith_q": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "731a16e8-9942-4e71-bfef-341265477c46",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "00a79498d5c3b6198959ad17059856730a8757021dcc9d1d8d2b7724f00d4bf4"
+  },
+  "id": "hDUWXRXc51JEK8Kh",
+  "tags": []
+}

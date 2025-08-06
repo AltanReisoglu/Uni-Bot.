@@ -1,0 +1,331 @@
+{
+  "name": "mcp server",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "2f0b3a79-190a-408c-973f-096048601617"
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpTrigger",
+      "typeVersion": 2,
+      "position": [
+        944,
+        -96
+      ],
+      "id": "7f943397-e39b-482a-b391-0f79ebce43d7",
+      "name": "MCP Server Trigger",
+      "webhookId": "2f0b3a79-190a-408c-973f-096048601617"
+    },
+    {
+      "parameters": {
+        "toolDescription": "Bu araç, yalnızca aşağıdaki konularla ilgili sorular geldiğinde kullanılmalıdır:\n\nEğitim geçmişi\n\nKariyer planlaması\n\nAkademik geçmiş\n\nDiploma ve sertifikalar\n\nMesleki deneyim\n\nİş arama süreçleri\n\nAkademik Hayat\n\nKullanıcının {{ $json.chatInput }} içinde yukarıdaki alanlarla ilgili bir sorgusu varsa bu araç aktif hale gelmelidir. Diğer tüm konularda bu araç devre dışı bırakılmalıdır.\n\nBu araçla verilen yanıtlar, model tarafından yalnızca çok küçük düzeltmelerle, orijinal cevaba sadık kalınarak kullanıcıya sunulmalıdır. Gereksiz değişikliklerden kaçınılmalıdır.",
+        "method": "POST",
+        "url": "https://us-central1-aiplatform.googleapis.com/v1/projects/246624734452/locations/us-central1/endpoints/2397466412667895808:generateContent",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleOAuth2Api",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"contents\": [\n    {\n      \"role\": \"user\",\n      \"parts\": [\n        {\n          \"text\": \"Bana üniversite öğrencisi için akademik tavsiyeler verir misin?\"\n        }\n      ]\n    }\n  ],\n  \"generationConfig\": {\n    \"temperature\": 0.7,  \n    \"topP\": 0.95,\n    \"maxOutputTokens\": 8192\n  },\n  \"safetySettings\": [\n    {\n      \"category\": \"HARM_CATEGORY_HATE_SPEECH\",\n      \"threshold\": \"BLOCK_NONE\"\n    },\n    {\n      \"category\": \"HARM_CATEGORY_DANGEROUS_CONTENT\",\n      \"threshold\": \"BLOCK_NONE\"\n    },\n    {\n      \"category\": \"HARM_CATEGORY_SEXUALLY_EXPLICIT\",\n      \"threshold\": \"BLOCK_NONE\"\n    },\n    {\n      \"category\": \"HARM_CATEGORY_HARASSMENT\",\n      \"threshold\": \"BLOCK_NONE\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        656,
+        400
+      ],
+      "id": "b2357179-67d3-4f90-a205-c55217f379a1",
+      "name": "fined_tuned",
+      "executeOnce": false,
+      "credentials": {
+        "googleOAuth2Api": {
+          "id": "xiSu0YuLuKPqyhrg",
+          "name": "altan_acces"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolCalculator",
+      "typeVersion": 1,
+      "position": [
+        864,
+        400
+      ],
+      "id": "d87e81e2-3aa3-40e1-a853-5b34cd4093c1",
+      "name": "Calculator"
+    },
+    {
+      "parameters": {
+        "description": "call this tool to send email someone.",
+        "workflowId": {
+          "__rl": true,
+          "value": "ldSJsYAZj1QawzIV",
+          "mode": "list",
+          "cachedResultName": "gmail agent"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        1488,
+        400
+      ],
+      "id": "512d8726-7b81-4a55-8eed-88fdc44ae2ca",
+      "name": "sent mail"
+    },
+    {
+      "parameters": {
+        "description": "\nBu aracı, üniversiteye ait dökümanlar, ders notları, yönetmelikler, akademik takvimler veya diğer dış kaynaklardan bilgi almak için kullanılır..  \nKullanıcının sorduğu konu hakkında mevcut bilgin yetersizse veya güncel/veriye dayalı bir açıklama gerekiyorsa bu aracı devreye al.  \nYanıt üretmeden önce ilgili metni geri getirir ve ardından kullanıcıya açıklayıcı bir cevap oluşturursun.\n\n🧠 Kullanım Senaryoları:  \n- Ders içeriği veya kaynak not sorgulama  \n- Fakülte yönetmeliği maddesi öğrenme  \n- Akademik takvimde tarih bulma  \n- Dış kaynaklı açıklamalı bilgi gerektiren konular\n\n❗ Dikkat:  \nGeri getirilen bilginin doğruluğunu kontrol et ve sadece bağlama uygun kısmını kullanarak cevap üret."
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1.1,
+      "position": [
+        1088,
+        400
+      ],
+      "id": "51e04566-f7b8-4142-9e19-b963655240ef",
+      "name": "rag"
+    },
+    {
+      "parameters": {
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "ragbot3",
+          "mode": "list",
+          "cachedResultName": "ragbot3"
+        },
+        "options": {
+          "pineconeNamespace": "ragbot"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        1072,
+        576
+      ],
+      "id": "a44a29ea-4b00-4d64-ac96-1bc855c59315",
+      "name": "Pinecone Vector Store",
+      "credentials": {
+        "pineconeApi": {
+          "id": "nYmOykDiXDuVyhTH",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        976,
+        704
+      ],
+      "id": "9a166ea7-eb13-4d7c-b10c-9664b5fed5e0",
+      "name": "Embeddings Google Gemini",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "35c3e9bZE8n3ZyCl",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1376,
+        704
+      ],
+      "id": "f7e2b9ef-3a9a-45c4-bbd6-7d67d436ca87",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "35c3e9bZE8n3ZyCl",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "This tool analyze and transcribe video",
+        "resource": "video",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-1.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-1.5-flash"
+        },
+        "videoUrls": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('URL_s_', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGeminiTool",
+      "typeVersion": 1,
+      "position": [
+        1760,
+        384
+      ],
+      "id": "c7a660a9-2509-4abe-a01f-559b40a610d0",
+      "name": "video_analyze",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "35c3e9bZE8n3ZyCl",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "bu araç okul klupleriyle ilgili herhangi bir konuşma olduğu zaman çalışır",
+        "workflowId": {
+          "__rl": true,
+          "value": "hDUWXRXc51JEK8Kh",
+          "mode": "list",
+          "cachedResultName": "insert_member"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        1568,
+        96
+      ],
+      "id": "5716a614-3594-48a0-b372-5c9bcf1cef35",
+      "name": "insert_member"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "fined_tuned": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculator": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "sent mail": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "rag": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "rag",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "rag",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "video_analyze": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "insert_member": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "11bbc81f-aa86-4bf7-9fdb-704b054b74cc",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "00a79498d5c3b6198959ad17059856730a8757021dcc9d1d8d2b7724f00d4bf4"
+  },
+  "id": "O8lq1yW54UFmFoj2",
+  "tags": []
+}
